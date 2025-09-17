@@ -1,0 +1,88 @@
+[11:27:31:237]|[09-12-2025]|[general]|[SEVERE]|[37]: context initialized|
+[11:27:31:250]|[09-12-2025]|[general]|[INFO]|[37]: rmpDid |
+[11:27:31:250]|[09-12-2025]|[general]|[INFO]|[37]: Reading Did from DB|
+[11:27:31:280]|[09-12-2025]|[general]|[INFO]|[37]: API called: LicenseUtil.setLicenseData()|
+[11:27:31:547]|[09-12-2025]|[general]|[INFO]|[37]: tracked obj count: 0|
+[11:27:32:776]|[09-12-2025]|[general]|[INFO]|[62]: Starter : Committing interrupted operation status|
+[11:27:32:908]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryMapper.RepositoryMapper(1)|
+[11:27:32:908]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryMapper.RepositoryMapper(1)|
+[11:27:32:915]|[09-12-2025]|[general]|[SEVERE]|[63]: Exception in RepositoryUtil.getMetaRepositoryDetails: java.lang.IllegalArgumentException: Unknown table name specified RMPESOldDataDetails
+	at com.adventnet.ds.query.util.TypeUtil.setColumnNameAndIndex(TypeUtil.java:100)
+	at com.adventnet.ds.query.util.TypeUtil.setType(TypeUtil.java:40)
+	at com.adventnet.ds.query.util.TypeUtil.setType(TypeUtil.java:273)
+	at com.adventnet.ds.query.util.TypeUtil.setType(TypeUtil.java:459)
+	at com.adventnet.ds.query.util.TypeUtil.setTypeForCriteria(TypeUtil.java:549)
+	at com.adventnet.ds.query.util.TypeUtil.setTypeForCriteria(TypeUtil.java:631)
+	at com.adventnet.ds.query.SelectQueryImpl.processDataType(SelectQueryImpl.java:1949)
+	at com.adventnet.ds.query.util.QueryUtil.setDataType(QueryUtil.java:2968)
+	at com.adventnet.db.api.RelationalAPI.setDataType(RelationalAPI.java:1722)
+	at com.adventnet.db.api.RelationalAPI.executeQuery(RelationalAPI.java:1112)
+	at com.adventnet.persistence.internal.GetUtil.get(GetUtil.java:107)
+	at com.adventnet.persistence.internal.GetUtil.get(GetUtil.java:81)
+	at com.adventnet.persistence.DataAccess.get(DataAccess.java:2325)
+	at com.adventnet.persistence.DataAccess.get(DataAccess.java:2316)
+	at com.adventnet.persistence.interceptor.CorePersistenceInterceptor.process(CorePersistenceInterceptor.java:141)
+	at com.adventnet.persistence.interceptor.NotificationPersistenceInterceptor.process(NotificationPersistenceInterceptor.java:227)
+	at com.adventnet.persistence.PersistenceBean.process(PersistenceBean.java:653)
+	at com.adventnet.persistence.PersistenceBean.get(PersistenceBean.java:225)
+	at sun.reflect.GeneratedMethodAccessor47.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.adventnet.mfw.bean.BeanProxy.lambda$invoke$0(BeanProxy.java:51)
+	at com.zoho.mickey.api.DefaultCodeBlock.execute(CodeBlock.java:453)
+	at com.adventnet.mfw.bean.BeanProxy.invoke(BeanProxy.java:48)
+	at com.sun.proxy.$Proxy2.get(Unknown Source)
+	at com.manageengine.rmp.respository.RepositoryUtil.getMetaRepositoryDetails(RepositoryUtil.java:388)
+	at com.manageengine.rmp.es.node.ESNodeDetails.registerAllNodeObjects(ESNodeDetails.java:314)
+	at com.manageengine.rmp.common.Starter$2.run(Starter.java:246)
+|
+[11:27:32:928]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryMapper.RepositoryMapper(2)|
+[11:27:32:928]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryMapper.RepositoryMapper(1)|
+[11:27:32:934]|[09-12-2025]|[general]|[SEVERE]|[63]: Exception in RepositoryUtil.getMetaRepositoryDetails: java.lang.IllegalArgumentException: Unknown table name specified RMPESOldDataDetails
+	at com.adventnet.ds.query.util.TypeUtil.setColumnNameAndIndex(TypeUtil.java:100)
+	at com.adventnet.ds.query.util.TypeUtil.setType(TypeUtil.java:40)
+	at com.adventnet.ds.query.util.TypeUtil.setType(TypeUtil.java:273)
+	at com.adventnet.ds.query.util.TypeUtil.setType(TypeUtil.java:459)
+	at com.adventnet.ds.query.util.TypeUtil.setTypeForCriteria(TypeUtil.java:549)
+	at com.adventnet.ds.query.util.TypeUtil.setTypeForCriteria(TypeUtil.java:631)
+	at com.adventnet.ds.query.SelectQueryImpl.processDataType(SelectQueryImpl.java:1949)
+	at com.adventnet.ds.query.util.QueryUtil.setDataType(QueryUtil.java:2968)
+	at com.adventnet.db.api.RelationalAPI.setDataType(RelationalAPI.java:1722)
+	at com.adventnet.db.api.RelationalAPI.executeQuery(RelationalAPI.java:1112)
+	at com.adventnet.persistence.internal.GetUtil.get(GetUtil.java:107)
+	at com.adventnet.persistence.internal.GetUtil.get(GetUtil.java:81)
+	at com.adventnet.persistence.DataAccess.get(DataAccess.java:2325)
+	at com.adventnet.persistence.DataAccess.get(DataAccess.java:2316)
+	at com.adventnet.persistence.interceptor.CorePersistenceInterceptor.process(CorePersistenceInterceptor.java:141)
+	at com.adventnet.persistence.interceptor.NotificationPersistenceInterceptor.process(NotificationPersistenceInterceptor.java:227)
+	at com.adventnet.persistence.PersistenceBean.process(PersistenceBean.java:653)
+	at com.adventnet.persistence.PersistenceBean.get(PersistenceBean.java:225)
+	at sun.reflect.GeneratedMethodAccessor47.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.adventnet.mfw.bean.BeanProxy.lambda$invoke$0(BeanProxy.java:51)
+	at com.zoho.mickey.api.DefaultCodeBlock.execute(CodeBlock.java:453)
+	at com.adventnet.mfw.bean.BeanProxy.invoke(BeanProxy.java:48)
+	at com.sun.proxy.$Proxy2.get(Unknown Source)
+	at com.manageengine.rmp.respository.RepositoryUtil.getMetaRepositoryDetails(RepositoryUtil.java:388)
+	at com.manageengine.rmp.es.node.ESNodeDetails.registerAllNodeObjects(ESNodeDetails.java:314)
+	at com.manageengine.rmp.common.Starter$2.run(Starter.java:246)
+|
+[11:27:32:943]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryMapper.RepositoryMapper(3)|
+[11:27:32:943]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryMapper.RepositoryMapper(1)|
+[11:27:32:944]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryCollectionManager.RepositoryCollectionManager()|
+[11:27:32:944]|[09-12-2025]|[general]|[INFO]|[63]: API called: RepositoryCollectionManager.registerAll()|
+[11:28:25:432]|[09-12-2025]|[general]|[INFO]|[63]: Updating aspose library|
+[11:28:25:982]|[09-12-2025]|[general]|[INFO]|[63]: Starter.updateAsposeLicense: licensed aspose library|
+[11:28:25:982]|[09-12-2025]|[general]|[INFO]|[63]: Starter.updateAsposeLicense: successfully updated aspose library|
+[11:28:26:058]|[09-12-2025]|[general]|[INFO]|[63]: Starting backupStorageChanges...|
+[11:28:26:059]|[09-12-2025]|[general]|[INFO]|[63]: Completed backupStorageChanges...|
+[11:28:26:401]|[09-12-2025]|[general]|[INFO]|[63]: Checking if RMP default_storage folder path to be updated in StorageConfig.xml|
+[11:28:26:403]|[09-12-2025]|[general]|[INFO]|[63]: RMP default_storage folder path already present in StorageConfig.xml|
+[11:28:26:404]|[09-12-2025]|[general]|[INFO]|[63]: About to handle RMP dashboard layout for existing integration HDT with RMP role|
+[11:28:26:406]|[09-12-2025]|[general]|[INFO]|[63]: RMP dashboard layout for existing HDT with RMP role has been handled already.|
+[11:28:26:406]|[09-12-2025]|[general]|[INFO]|[63]: Exiting RMP dashboard layout handling for existing integration HDT with RMP role|
+[11:44:05:986]|[09-12-2025]|[general]|[INFO]|[77]: API called: LicenseUtil.setLicenseData()|
+[11:44:06:103]|[09-12-2025]|[general]|[INFO]|[77]: tracked obj count: 0|
+[11:44:06:231]|[09-12-2025]|[general]|[INFO]|[77]: API Called getUserIdsWithLoginIds() with loginids: [1]|
+[11:44:06:404]|[09-12-2025]|[general]|[INFO]|[77]: Received IP of the Client = 172.30.160.1|
