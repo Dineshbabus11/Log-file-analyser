@@ -38,7 +38,7 @@ public class LiveLogDataServlet extends HttpServlet {
         sourceBuilder.size(50);
         searchRequest.source(sourceBuilder);
         SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
-        List<Map<String,Object>> logList = new ArrayList<>();
+        List<Map<String, Object>> logList = new ArrayList<>();
         for (SearchHit hit : response.getHits().getHits()) {
             logList.add(hit.getSourceAsMap());
         }

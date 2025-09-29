@@ -25,10 +25,11 @@ public class MatchedLogsJsonServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String lastIdParam = req.getParameter("lastId");
         int lastId = 0;
-        if (lastIdParam != null) {
-            try {
+        if(lastIdParam != null){
+            try{
                 lastId = Integer.parseInt(lastIdParam);
-            } catch (NumberFormatException e) {
+            } 
+			catch (NumberFormatException e) {
                 lastId = 0;
             }
         }
@@ -43,11 +44,11 @@ public class MatchedLogsJsonServlet extends HttpServlet {
             sourceBuilder.size(100);
             searchRequest.source(sourceBuilder);
             SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-            for (SearchHit hit : searchResponse.getHits()) {
+            for(SearchHit hit:searchResponse.getHits()){
                 logs.add(hit.getSourceAsMap());
             }
         } 
-		catch (Exception e) {
+		catch(Exception e){
             e.printStackTrace();
         }
         resp.setContentType("application/json");

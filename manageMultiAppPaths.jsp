@@ -6,6 +6,7 @@
 <%@ page import="org.elasticsearch.client.RequestOptions" %>
 <%@ page import="java.util.*" %>
 <%@ page import="app.ESClient" %>
+<%@ page import="app.MultiAppPathWatcherManager" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,8 +14,8 @@
     <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-    <h1>Tracked Log Files</h1>
-    <ul>
+<h1>Tracked Log Files</h1>
+<ul>
 <%
     RestHighLevelClient client = ESClient.getClient();
     SearchRequest req = new SearchRequest("paths");
@@ -23,9 +24,9 @@
     for (SearchHit hit : resp.getHits()) {
         Map<String, Object> map = hit.getSourceAsMap();
         String filePath = (String) map.get("pathString");
-        if (filePath == null){
-			continue;
-		}
+        if (filePath == null) {
+            continue;
+        }
         String safeIndex = "path_" + filePath.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase();
 %>
     <li>
@@ -34,11 +35,20 @@
             <input type="hidden" name="indexName" value="<%= safeIndex %>" />
             <button type="submit">View Live Logs</button>
         </form>
+        <form action="controlMultiAppPath" method="post" style="display:inline;">
+            <input type="hidden" name="path" value="<%= filePath %>" />
+            <% if (MultiAppPathWatcherManager.isTracking(filePath)) { %>
+                <input type="hidden" name="action" value="stop" />
+                <button type="submit">Stop</button>
+            <% } 
+			else { %>
+                <input type="hidden" name="action" value="start" />
+                <button type="submit">Start</button>
+            <% } %>
+        </form>
     </li>
-<%
-    }
-%>
+<% } %>
 </ul>
-    <a href="MultiApp.jsp">Back to Add New Log File Path</a>
+<a href="MultiApp.jsp">Back to Add New Log File Path</a>
 </body>
 </html>

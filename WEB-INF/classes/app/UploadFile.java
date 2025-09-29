@@ -7,7 +7,7 @@ import java.util.regex.*;
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
-import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.*;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.xcontent.XContentType;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -64,6 +64,9 @@ public class UploadFile extends HttpServlet {
 			BulkByScrollResponse deleteResponse = client.deleteByQuery(deleteRequest, RequestOptions.DEFAULT);
 			String folderPath = getServletContext().getRealPath("") + File.separator + "folder";
 			File logFile = new File(folderPath, fileName);
+			try(Statement st = con.createStatement()) {
+				st.executeUpdate("TRUNCATE TABLE log_rule_map RESTART IDENTITY");
+			}
 			try(BufferedReader br = new BufferedReader(new FileReader(logFile))) {
 				String line;
 				while((line = br.readLine()) != null) {
@@ -109,7 +112,17 @@ public class UploadFile extends HttpServlet {
 						jsonMap.put("matchedRuleNames",matchedRuleNames);
 						jsonMap.put("timestamp", new java.util.Date());
 						IndexRequest indexRequest=new IndexRequest("logs").source(jsonMap, XContentType.JSON);
-						client.index(indexRequest,RequestOptions.DEFAULT);
+						IndexResponse indexResponse=client.index(indexRequest,RequestOptions.DEFAULT);
+						String esId = indexResponse.getId();
+						
+						try(PreparedStatement psInsert = con.prepareStatement("INSERT INTO log_rule_map (log_id, rule_id) VALUES (?, ?)")){
+							for(Integer ruleId:matchedRuleIds) {
+								psInsert.setString(1,esId);
+								psInsert.setInt(2,ruleId);
+								psInsert.addBatch();
+							}
+							psInsert.executeBatch();
+						}
 					}
 				}
 			}
