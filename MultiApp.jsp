@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Multiple Application Tracking</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+    <h1>Multiple Application Tracking</h1>
+    <h2>Add New Path</h2>
+    <form action="addMultiAppPath" method="post">
+        <label for="newPath">Path:</label><br/>
+        <input type="text" id="newPath" name="newPath" placeholder="Enter new path" required style="width:300px;" /><br/><br/>
+        <input type="submit" value="Add Path" />
+    </form>
+    <hr/>
+    <form action="manageMultiAppPaths.jsp" method="get">
+        <button type="submit">Go to Manage Paths</button>
+    </form>
+	<form action="index.html">
+        <button type="submit">Back to main page</button>
+    </form>
+</body>
+</html>

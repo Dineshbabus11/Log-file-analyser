@@ -5,10 +5,10 @@
     <link rel="stylesheet" href="./style.css">
     <script>
         function addCondition() {
-            const container = document.getElementById("conditions");
-            const div = document.createElement("div");
-            div.className = "condition";
-            div.innerHTML = `<select name="field" onchange="updateInputType(this)">
+            const container=document.getElementById("conditions");
+            const div=document.createElement("div");
+            div.className="condition";
+            div.innerHTML=`<select name="field" onchange="updateInputType(this)">
                     <option value="date">Date</option>
                     <option value="time">Time</option>
                     <option value="logger">Logger</option>
@@ -31,7 +31,7 @@
             updateInputType(div.querySelector('select[name=field]'));
         }
         function updateInputType(select) {
-            var input = select.parentNode.querySelector('input[name=pattern]');
+            var input=select.parentNode.querySelector('input[name=pattern]');
             if(select.value==='date'){
 				input.type='date';
 			} 
@@ -67,9 +67,11 @@
 </head>
 <body>
     <h2>Add New Rule</h2>
-    <form action="addRule" method="post">
+    <form action="addRule" method="post" onsubmit="console.log('Email:', document.querySelector('input[name=email]').value)">
         <label>Rule Name:</label><br>
-        <input type="text" name="name" required><br><br>
+        <input type="text" name="name" required><br>
+		<label>Email:</label><br>
+		<input type="email" name="email" required><br>
         <div id="conditions"></div>
         <button type="button" onclick="addCondition()">Add Condition</button>
         <br>

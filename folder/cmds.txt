@@ -1,0 +1,81 @@
+curl -X GET "http://localhost:9200/logs/_search?pretty" ---> see all the data in logs
+
+curl -X PUT "http://localhost:9200/logs/_settings" -H "Content-Type: application/json" -d "{\"index.blocks.read_only_allow_delete\": null}" ---> to solve disk watermark
+
+javac -cp ".;C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\webapps\LogAnalyser\WEB-INF\lib\*;C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\lib\*" *.java
+
+console.log('Log entry properties:', log.time, log.date, log.logger, log.level, log.code, log.message, log.matchedRuleNames);
+
+
+http://localhost:8080/LogAnalyser/liveLogData?indexName=path_c__users_arul_selvan_onedrive_desktop_dinesh_zoho_official_apache_tomcat_9_0_109_webapps_blooddonationweb_web_inf_logs_app_log
+
+request option default?
+
+curl -X GET "http://localhost:9200/_cat/indices?v"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+package app;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import java.sql.*;
+
+@WebListener
+public class StartupListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        try (Connection con = DBconnect.connect();
+             PreparedStatement ps = con.prepareStatement("SELECT path, index_name FROM watched_paths");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String path = rs.getString("path");
+                String indexName = rs.getString("index_name");
+                MultiAppPathWatcherManager.startTracking(path, indexName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        MultiAppPathWatcherManager.shutdownAll();
+    }
+}
+

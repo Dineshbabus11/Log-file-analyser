@@ -10,14 +10,15 @@ import javax.servlet.http.*;
 public class ViewRules extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try (Connection con = DBconnect.connect();
-             PreparedStatement ps = con.prepareStatement("SELECT id, name FROM rules");
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM rules");
              ResultSet rs = ps.executeQuery()) {
 
             req.setAttribute("rulesResultSet", rs);
             RequestDispatcher rd = req.getRequestDispatcher("viewRules.jsp");
             rd.forward(req, res);
 
-        } catch (Exception e) {
+        } 
+		catch (Exception e) {
             e.printStackTrace();
         }
     }

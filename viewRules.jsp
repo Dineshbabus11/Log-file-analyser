@@ -9,13 +9,14 @@
     <h2>Existing Rules</h2>
     <%
         try (Connection con = DBconnect.connect();
-             PreparedStatement psRules = con.prepareStatement("SELECT id, name FROM rules");
-             ResultSet rsRules = psRules.executeQuery()) {
+             PreparedStatement psRules=con.prepareStatement("SELECT * FROM rules");
+             ResultSet rsRules=psRules.executeQuery()) {
             while (rsRules.next()) {
-                int ruleId = rsRules.getInt("id");
-                String ruleName = rsRules.getString("name");
+                int ruleId=rsRules.getInt("id");
+                String ruleName=rsRules.getString("name");
+				String email=rsRules.getString("email");
     %>
-    <h3>Rule: <%= ruleName %> (ID: <%= ruleId %>)</h3>
+    <h3>Rule: <%= ruleName %> (ID: <%= ruleId %>)- Email: <%= email %></h3>
     <table border="1" cellpadding="5" style="margin-bottom:20px;">
         <tr>
             <th>Field</th>
@@ -24,17 +25,16 @@
             <th>Logic Operator</th>
         </tr>
         <%
-            try (PreparedStatement psCond = con.prepareStatement(
-                     "SELECT field, operator, pattern, logic_op FROM rule_conditions WHERE rule_id=? ORDER BY id ASC")) {
+            try (PreparedStatement psCond=con.prepareStatement("SELECT field, operator, pattern, logic_op FROM rule_conditions WHERE rule_id=? ORDER BY id ASC")) {
                 psCond.setInt(1, ruleId);
                 try (ResultSet rsCond = psCond.executeQuery()) {
                     while (rsCond.next()) {
         %>
         <tr>
-            <td><%= rsCond.getString("field") %></td>
-            <td><%= rsCond.getString("operator") %></td>
-            <td><%= rsCond.getString("pattern") %></td>
-            <td><%= rsCond.getString("logic_op") %></td>
+            <td><%= rsCond.getString("field")%></td>
+            <td><%= rsCond.getString("operator")%></td>
+            <td><%= rsCond.getString("pattern")%></td>
+            <td><%= rsCond.getString("logic_op")%></td>
         </tr>
         <%
                     }
@@ -44,7 +44,8 @@
     </table>
     <%
             }
-        } catch (Exception e) {
+        } 
+		catch (Exception e) {
             e.printStackTrace();
         }
     %>
