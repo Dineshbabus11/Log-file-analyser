@@ -5,31 +5,55 @@
     <title>Live Logs - <%= request.getAttribute("path") %></title>
     <link rel="stylesheet" href="./style.css" />
     <script>
-        function fetchLogs() {
+        let currentPage = 1;
+        const pageSize = 50;
+
+        function fetchLogs(page = 1) {
             const indexName = "<%= request.getAttribute("path") %>";
-            fetch('liveLogData?indexName=' + encodeURIComponent(indexName))
+            fetch('liveLogData?indexName=' + encodeURIComponent(indexName) + 
+                  '&page=' + page + '&size=' + pageSize)
                 .then(response => response.json())
                 .then(data => {
+                    currentPage = data.page;
                     const tbody = document.getElementById('logsBody');
                     tbody.innerHTML = '';
-                    if (data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="8">No logs found</td></tr>';
+                    if (!data.logs || data.logs.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7">No logs found</td></tr>';
+                        document.getElementById('pagination').style.display = 'none';
                         return;
                     }
-                    data.forEach(log => {
+                    data.logs.forEach(log => {
                         const row = document.createElement('tr');
-						['time', 'date', 'logger', 'level', 'code', 'message', 'matchedRuleNames'].forEach(k => {
-							const td = document.createElement('td');
-							td.textContent = log[k] ? log[k] : '-';
-							row.appendChild(td);
-						});
-						tbody.appendChild(row); 	
+                        ['time', 'date', 'logger', 'level', 'code', 'message', 'matchedRuleNames'].forEach(k => {
+                            const td = document.createElement('td');
+                            td.textContent = log[k] ? log[k] : '-';
+                            row.appendChild(td);
+                        });
+                        tbody.appendChild(row);
                     });
+                    const pagination = document.getElementById('pagination');
+                    pagination.style.display = 'block';
+
+                    const totalPages = Math.ceil(data.totalHits / pageSize);
+                    document.getElementById('pageInfo').textContent = 'Page ' + currentPage + ' of ' + totalPages;
+                    document.getElementById('prevBtn').disabled = currentPage <= 1;
+                    document.getElementById('nextBtn').disabled = currentPage >= totalPages;
                 })
                 .catch(console.error);
         }
-        setInterval(fetchLogs, 3000);
-        window.onload = fetchLogs;
+
+        function prevPage() {
+            if (currentPage > 1) {
+                fetchLogs(currentPage - 1);
+            }
+        }
+
+        function nextPage() {
+            fetchLogs(currentPage + 1);
+        }
+
+        setInterval(() => fetchLogs(currentPage), 3000);
+        window.onload = () => fetchLogs(1);
     </script>
 </head>
 <body>
@@ -48,8 +72,14 @@
             </tr>
         </thead>
         <tbody id="logsBody">
-            <tr><td colspan="8">Loading...</td></tr>
+            <tr><td colspan="7">Loading...</td></tr>
         </tbody>
     </table>
+
+    <div id="pagination" style="display:none; margin-top: 10px;">
+        <button id="prevBtn" onclick="prevPage()">Previous</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn" onclick="nextPage()">Next</button>
+    </div>
 </body>
 </html>

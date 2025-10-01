@@ -80,10 +80,10 @@
   %>
 </div>
 
-<h3>Filter by Message Regex</h3>
+<h3>Search by Message Word</h3>
 <form action="filterMessage" method="post">
   <input type="hidden" name="fileName" value="${fileName}"/>
-  <label for="msgPattern">Regex Pattern:</label>
+  <label for="msgPattern">Word:</label>
   <input type="text" id="msgPattern" name="msgPattern" />
   <input type="submit" value="Filter" />
 </form>

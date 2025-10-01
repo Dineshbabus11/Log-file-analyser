@@ -33,56 +33,56 @@ public class UploadFile extends HttpServlet {
 
 	protected void doPost(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
 		String contentType = req.getContentType();
-		Part filePart = null;
-		if(contentType != null && contentType.toLowerCase().startsWith("multipart/")) {
-			filePart = req.getPart("logFile");
+		Part filePart=null;
+		if(contentType!=null && contentType.toLowerCase().startsWith("multipart/")) {
+			filePart=req.getPart("logFile");
 		}
-		String fileName = null;
-		if(filePart != null) {
-			fileName = filePart.getSubmittedFileName();
-			String folderPath = getServletContext().getRealPath("") + File.separator + "folder";
-			File folder = new File(folderPath);
-			if(!folder.exists()) {
+		String fileName=null;
+		if(filePart!=null){
+			fileName=filePart.getSubmittedFileName();
+			String folderPath=getServletContext().getRealPath("")+File.separator+"folder";
+			File folder=new File(folderPath);
+			if(!folder.exists()){
 				folder.mkdir();
 			}
-			File file = new File(folder, fileName);
+			File file=new File(folder,fileName);
 			filePart.write(file.getAbsolutePath());
-		} 
-		else {
-			fileName = req.getParameter("fileName");
-			if(fileName == null || fileName.isEmpty()) {
+		}
+		else{
+			fileName=req.getParameter("fileName");
+			if(fileName==null || fileName.isEmpty()) {
 				res.sendError(HttpServletResponse.SC_BAD_REQUEST, "No fileName provided");
 				return;
 			}
 		}
 		int totalLines = 0, errorCount = 0, warningCount = 0, infoCount = 0;
-		try(Connection con = DBconnect.connect()) {
-			RestHighLevelClient client = ESClient.getClient();
-			DeleteByQueryRequest deleteRequest = new DeleteByQueryRequest("logs");
+		try(Connection con=DBconnect.connect()) {
+			RestHighLevelClient client=ESClient.getClient();
+			DeleteByQueryRequest deleteRequest=new DeleteByQueryRequest("logs");
 			deleteRequest.setQuery(new MatchAllQueryBuilder());
 			deleteRequest.setConflicts("proceed");
-			BulkByScrollResponse deleteResponse = client.deleteByQuery(deleteRequest, RequestOptions.DEFAULT);
-			String folderPath = getServletContext().getRealPath("") + File.separator + "folder";
-			File logFile = new File(folderPath, fileName);
-			try(Statement st = con.createStatement()) {
+			BulkByScrollResponse deleteResponse=client.deleteByQuery(deleteRequest, RequestOptions.DEFAULT);
+			String folderPath=getServletContext().getRealPath("")+File.separator+"folder";
+			File logFile=new File(folderPath,fileName);
+			try(Statement st=con.createStatement()){
 				st.executeUpdate("TRUNCATE TABLE log_rule_map RESTART IDENTITY");
 			}
 			try(BufferedReader br = new BufferedReader(new FileReader(logFile))) {
 				String line;
-				while((line = br.readLine()) != null) {
+				while((line=br.readLine())!=null) {
 					totalLines++;
-					LogEntry logEntry = ParseMatchLog.parseLogLine(line);
-					if(logEntry == null){
+					LogEntry logEntry=ParseMatchLog.parseLogLine(line);
+					if(logEntry==null){
 						continue;
 					}
-					List<Integer> matchedRuleIds = new ArrayList<>();
-					List<String> matchedRuleNames = new ArrayList<>();
-					try(PreparedStatement psRules = con.prepareStatement("SELECT id, name FROM rules");
-						ResultSet rsRules = psRules.executeQuery()) {
-						while(rsRules.next()) {
-							int ruleId = rsRules.getInt("id");
-							String ruleName = rsRules.getString("name");
-							if(ParseMatchLog.matchesRule(con, ruleId, logEntry)) {
+					List<Integer> matchedRuleIds=new ArrayList<>();
+					List<String> matchedRuleNames=new ArrayList<>();
+					try(PreparedStatement psRules=con.prepareStatement("SELECT id, name FROM rules");
+						ResultSet rsRules=psRules.executeQuery()) {
+						while(rsRules.next()){
+							int ruleId=rsRules.getInt("id");
+							String ruleName=rsRules.getString("name");
+							if(ParseMatchLog.matchesRule(con,ruleId,logEntry)) {
 								matchedRuleIds.add(ruleId);
 								matchedRuleNames.add(ruleName);
 							}
@@ -114,7 +114,6 @@ public class UploadFile extends HttpServlet {
 						IndexRequest indexRequest=new IndexRequest("logs").source(jsonMap, XContentType.JSON);
 						IndexResponse indexResponse=client.index(indexRequest,RequestOptions.DEFAULT);
 						String esId = indexResponse.getId();
-						
 						try(PreparedStatement psInsert = con.prepareStatement("INSERT INTO log_rule_map (log_id, rule_id) VALUES (?, ?)")){
 							for(Integer ruleId:matchedRuleIds) {
 								psInsert.setString(1,esId);
@@ -154,26 +153,26 @@ public class UploadFile extends HttpServlet {
 			RequestDispatcher rd=req.getRequestDispatcher("results.jsp");
 			rd.forward(req,res);
 		} 
-		catch(Exception e) {
+		catch(Exception e){
 			throw new ServletException(e);
 		}
 	}
 
 	private long getTotalHits(RestHighLevelClient client) throws IOException {
-		SearchRequest searchRequest = new SearchRequest("logs");
-		SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+		SearchRequest searchRequest=new SearchRequest("logs");
+		SearchSourceBuilder sourceBuilder=new SearchSourceBuilder();
 		sourceBuilder.size(0);
 		searchRequest.source(sourceBuilder);
-		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		SearchResponse searchResponse=client.search(searchRequest, RequestOptions.DEFAULT);
 		return searchResponse.getHits().getTotalHits().value;
 	}
 
 	private ArrayList<LogEntry> fetchLogsFromES(RestHighLevelClient client, int page, int size) throws IOException {
-		ArrayList<LogEntry> esLogs = new ArrayList<>();
-		SearchRequest searchRequest = new SearchRequest("logs");
-		SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+		ArrayList<LogEntry> esLogs=new ArrayList<>();
+		SearchRequest searchRequest=new SearchRequest("logs");
+		SearchSourceBuilder sourceBuilder=new SearchSourceBuilder();
 		sourceBuilder.query(QueryBuilders.matchAllQuery());
-		sourceBuilder.from((page - 1) * size);
+		sourceBuilder.from((page-1)*size);
 		sourceBuilder.size(size);
 		searchRequest.source(sourceBuilder);
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);

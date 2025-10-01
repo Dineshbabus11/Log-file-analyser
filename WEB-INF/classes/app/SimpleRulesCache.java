@@ -20,7 +20,7 @@ public class SimpleRulesCache {
                 ResultSet rsCond = psCond.executeQuery();
                 while (rsCond.next()) {
                     rule.conditions.add(new RuleCondition(rsCond.getString("field"),rsCond.getString("pattern"),
-                        rsCond.getString("operator"),rsCond.getString("logic_op")));
+                        rsCond.getString("operator"),rsCond.getString("logic_op"),rsCond.getInt("exec_order")));
                 }
                 tempCache.put(ruleId, rule);
             }
@@ -46,12 +46,14 @@ public class SimpleRulesCache {
 
     public static class RuleCondition {
         public String field, pattern, operator, logicOp;
+		public int execOrder;
 
-        public RuleCondition(String field, String pattern, String operator, String logicOp) {
+        public RuleCondition(String field, String pattern, String operator, String logicOp, int execOrder) {
             this.field = field;
             this.pattern = pattern;
             this.operator = operator;
             this.logicOp = logicOp;
+			this.execOrder = execOrder;
         }
     }
 }

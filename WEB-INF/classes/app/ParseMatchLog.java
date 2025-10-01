@@ -47,7 +47,7 @@ class ParseMatchLog{
 	}
 	
 	public static boolean matchesRule(Connection con, int ruleId, LogEntry entry) throws SQLException {
-		String sql = "SELECT field, pattern, operator, logic_op FROM rule_conditions WHERE rule_id=? ORDER BY id ASC";
+		String sql = "SELECT field, pattern, operator, logic_op FROM rule_conditions WHERE rule_id=? ORDER BY exec_order ASC";
 		try(PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setInt(1, ruleId);
 			try(ResultSet rs = ps.executeQuery()) {

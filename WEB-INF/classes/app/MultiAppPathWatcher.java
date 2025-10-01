@@ -15,26 +15,29 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.time.Instant;
 
-public class MultiAppPathWatcher implements Runnable {
+public class MultiAppPathWatcher implements Runnable{
     private final String filePath;
     private final String esIndex;
-    private long lastFilePointer = 0;
+    private long lastFilePointer=0;
 
-    public MultiAppPathWatcher(String filePath, String esIndex) {
-        this.filePath = filePath;
-        this.esIndex = esIndex;
+    public MultiAppPathWatcher(String filePath, String esIndex){
+        this.filePath=filePath;
+        this.esIndex=esIndex;
     }
 
-    public void run() {
-        File logFile = new File(filePath);
-        Date lastStoredTimestamp = getLastStoredTimestamp();
+    public void run(){
+        File logFile=new File(filePath);
+		if (lastFilePointer == 0 && logFile.exists()) {
+			lastFilePointer = logFile.length();
+		}
+        Date lastStoredTimestamp=getLastStoredTimestamp();
         SimpleRulesCache.reload();
-        while (!Thread.currentThread().isInterrupted()) {
-            try (RandomAccessFile raf = new RandomAccessFile(logFile, "r")) {
+        while(!Thread.currentThread().isInterrupted()){
+            try(RandomAccessFile raf=new RandomAccessFile(logFile,"r")) {
                 raf.seek(lastFilePointer);
                 String line;
-                while ((line = raf.readLine()) != null) {
-                    LogEntry logEntry = ParseMatchLog.parseLogLine(line);
+                while((line=raf.readLine())!=null) {
+                    LogEntry logEntry=ParseMatchLog.parseLogLine(line);
                     if (logEntry == null) {
                         continue;
                     }
@@ -42,29 +45,32 @@ public class MultiAppPathWatcher implements Runnable {
                     if (lastStoredTimestamp != null && logDateTime != null && !logDateTime.after(lastStoredTimestamp)) {
                         continue;
                     }
-                    List<Integer> matchedRuleIds = new ArrayList<>();
-                    List<String> matchedRuleNames = new ArrayList<>();
-                    for (SimpleRulesCache.CachedRule rule : SimpleRulesCache.getRules()) {
-                        if (matchesRuleCached(rule, logEntry)) {
+                    List<Integer> matchedRuleIds=new ArrayList<>();
+                    List<String> matchedRuleNames=new ArrayList<>();
+                    for(SimpleRulesCache.CachedRule rule:SimpleRulesCache.getRules()){
+                        if(matchesRuleCached(rule,logEntry)){
                             matchedRuleIds.add(rule.id);
                             matchedRuleNames.add(rule.name);
                         }
                     }
-                    if (!matchedRuleIds.isEmpty()) {
-                        indexLogLine(logEntry, matchedRuleIds, matchedRuleNames);
-                        lastStoredTimestamp = logDateTime;
+                    if(!matchedRuleIds.isEmpty()){
+                        indexLogLine(logEntry,matchedRuleIds,matchedRuleNames);
+                        lastStoredTimestamp=logDateTime;
                     }
                 }
-                lastFilePointer = raf.getFilePointer();
+                lastFilePointer=raf.getFilePointer();
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            } 
+			catch(InterruptedException e){
                 Thread.currentThread().interrupt();
                 break;
-            } catch (Exception e) {
+            } 
+			catch(Exception e){
                 e.printStackTrace();
-                try {
+                try{
                     Thread.sleep(5000);
-                } catch (InterruptedException ex) {
+                } 
+				catch(InterruptedException ex){
                     break;
                 }
             }
@@ -72,45 +78,62 @@ public class MultiAppPathWatcher implements Runnable {
     }
 
     private boolean matchesRuleCached(SimpleRulesCache.CachedRule rule, LogEntry entry) {
-        boolean result = false;
-        boolean first = true;
-        for (SimpleRulesCache.RuleCondition cond : rule.conditions) {
-            String fieldValue = "";
+        boolean result=false;
+        boolean first=true;
+        for(SimpleRulesCache.RuleCondition cond : rule.conditions) {
+            String fieldValue="";
             switch (cond.field.toLowerCase()) {
                 case "time": 
-					fieldValue = entry.time; 
+					fieldValue=entry.time; 
 					break;
                 case "date": 
-					fieldValue = entry.date; 
+					fieldValue=entry.date; 
 					break;
                 case "logger": 
-					fieldValue = entry.logger; 
+					fieldValue=entry.logger; 
 					break;
                 case "level": 
-					fieldValue = entry.level; 
+					fieldValue=entry.level; 
 					break;
-                case "code": fieldValue = entry.code; break;
-                case "message": fieldValue = entry.message; break;
+                case "code": 
+					fieldValue=entry.code; 
+					break;
+                case "message": 
+					fieldValue=entry.message; 
+					break;
             }
-            boolean match = false;
+            boolean match=false;
             if ("date".equals(cond.field) || "time".equals(cond.field)) {
                 switch (cond.operator) {
-                    case "equals": match = fieldValue.equals(cond.pattern); break;
-                    case "greater": match = fieldValue.compareTo(cond.pattern) > 0; break;
-                    case "less": match = fieldValue.compareTo(cond.pattern) < 0; break;
-                    case "greater_equal": match = fieldValue.compareTo(cond.pattern) >= 0; break;
-                    case "less_equal": match = fieldValue.compareTo(cond.pattern) <= 0; break;
+                    case "equals": 
+						match = fieldValue.equals(cond.pattern); 
+						break;
+                    case "greater": 
+						match = fieldValue.compareTo(cond.pattern) > 0; 
+						break;
+                    case "less": 
+						match = fieldValue.compareTo(cond.pattern) < 0; 
+						break;
+                    case "greater_equal": 
+						match = fieldValue.compareTo(cond.pattern) >= 0; 
+						break;
+                    case "less_equal": 
+						match = fieldValue.compareTo(cond.pattern) <= 0; 
+						break;
                 }
-            } else {
+            } 
+			else {
                 match = Pattern.matches(cond.pattern, fieldValue);
             }
             if (first) {
                 result = match;
                 first = false;
-            } else {
+            } 
+			else {
                 if ("AND".equalsIgnoreCase(cond.logicOp)) {
                     result = result && match;
-                } else if ("OR".equalsIgnoreCase(cond.logicOp)) {
+                } 
+				else if ("OR".equalsIgnoreCase(cond.logicOp)) {
                     result = result || match;
                 }
             }
@@ -134,41 +157,42 @@ public class MultiAppPathWatcher implements Runnable {
             doc.put("timestamp", new java.util.Date());
             IndexRequest req = new IndexRequest(esIndex).source(doc, XContentType.JSON);
             client.index(req, RequestOptions.DEFAULT);
-        } catch (Exception e) {
+        } 
+		catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Date getLastStoredTimestamp() {
-        try {
-            RestHighLevelClient client = ESClient.getClient();
-            SearchRequest searchRequest = new SearchRequest(esIndex);
-            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
-                    .query(QueryBuilders.matchQuery("fileName", filePath))
-                    .sort("timestamp", SortOrder.DESC)
-                    .size(1);
+    private Date getLastStoredTimestamp(){
+        try{
+            RestHighLevelClient client=ESClient.getClient();
+            SearchRequest searchRequest=new SearchRequest(esIndex);
+            SearchSourceBuilder sourceBuilder=new SearchSourceBuilder()
+                    .query(QueryBuilders.matchQuery("fileName", filePath)).sort("timestamp", SortOrder.DESC).size(1);
             searchRequest.source(sourceBuilder);
-            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
-            if (response.getHits().getHits().length > 0) {
-                Map<String, Object> source = response.getHits().getAt(0).getSourceAsMap();
-                Object ts = source.get("timestamp");
-                if (ts != null) {
-                    Instant instant = Instant.parse(ts.toString());
+            SearchResponse response=client.search(searchRequest, RequestOptions.DEFAULT);
+            if(response.getHits().getHits().length>0) {
+                Map<String,Object> source=response.getHits().getAt(0).getSourceAsMap();
+                Object ts=source.get("timestamp");
+                if(ts!=null){
+                    Instant instant=Instant.parse(ts.toString());
                     return Date.from(instant);
                 }
             }
-        } catch (Exception e) {
+        } 
+		catch(Exception e){
             e.printStackTrace();
         }
         return null;
     }
 
-    private Date parseLogDateTime(LogEntry entry) {
-        try {
-            String dateTime = entry.date + " " + entry.time;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+    private Date parseLogDateTime(LogEntry entry){
+        try{
+            String dateTime=entry.date+" "+entry.time;
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
             return sdf.parse(dateTime);
-        } catch (Exception e) {
+        } 
+		catch(Exception e){
             return null;
         }
     }
