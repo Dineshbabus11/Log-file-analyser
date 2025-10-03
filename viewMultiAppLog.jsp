@@ -1,4 +1,5 @@
 <%@ page import="java.util.*" %>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,6 +59,11 @@
 </head>
 <body>
     <h1>Live Logs for <%= request.getAttribute("path") %></h1>
+	<form action="ExportLogsPdf" method="get" style="margin-bottom: 15px;">
+		<input type="hidden" name="indexName" value="<%= URLEncoder.encode((String)request.getAttribute("path"), "UTF-8") %>" />
+		<button type="submit">Export PDF</button>
+	</form>
+
     <a href="manageMultiAppPaths.jsp">Back</a>
     <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
         <thead>
