@@ -14,3 +14,4 @@ request option default?
 curl -X GET "http://localhost:9200/_cat/indices?v"
 
 
+javac -cp "C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\lib\*;C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\webapps\BloodDonationWeb\WEB-INF\lib\*" *.java

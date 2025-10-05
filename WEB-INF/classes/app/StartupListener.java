@@ -7,16 +7,27 @@ import javax.servlet.annotation.*;
 @WebListener
 public class StartupListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
-        try (Connection con = DBconnect.connect();
-             PreparedStatement ps = con.prepareStatement("SELECT path, index_name FROM watched_paths WHERE enabled = TRUE");
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                String path = rs.getString("path");
-                String indexName = rs.getString("index_name");
-                MultiAppPathWatcherManager.startTracking(path, indexName);
+        try(Connection con=DBconnect.connect()){
+            try(PreparedStatement ps=con.prepareStatement(
+                         "SELECT path,index_name FROM watched_paths WHERE enabled = TRUE");
+                 ResultSet rs=ps.executeQuery()) {
+                while(rs.next()){
+                    String path=rs.getString("path");
+                    String indexName=rs.getString("index_name");
+                    MultiAppPathWatcherManager.startTracking(path, indexName);
+                }
+            }
+            try(PreparedStatement ps=con.prepareStatement(
+                         "SELECT api_url,index_name FROM watched_apis WHERE enabled = TRUE");
+                 ResultSet rs=ps.executeQuery()) {
+                while(rs.next()){
+                    String apiUrl=rs.getString("api_url");
+                    String indexName=rs.getString("index_name");
+                    ApiWatcherManager.startTracking(apiUrl,indexName);
+                }
             }
         } 
-		catch (Exception e) {
+		catch(Exception e){
             e.printStackTrace();
         }
     }
