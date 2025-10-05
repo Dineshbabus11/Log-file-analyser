@@ -11,14 +11,14 @@ import java.util.regex.Pattern;
 
 public class ApiWatcher implements Runnable {
     private final String apiUrl;
+    private final String apiKey; 
     private final String esIndex;
     private Set<String> knownKeys = new HashSet<>();
-
-    public ApiWatcher(String apiUrl, String esIndex) {
+    public ApiWatcher(String apiUrl, String apiKey, String esIndex) {
         this.apiUrl = apiUrl;
+        this.apiKey = apiKey;
         this.esIndex = esIndex;
     }
-
     public void run() {
         Gson gson = new Gson();
         SimpleRulesCache.reload();
@@ -28,6 +28,10 @@ public class ApiWatcher implements Runnable {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");
+                if (apiKey != null && !apiKey.isEmpty()) {
+                    conn.setRequestProperty("X-API-KEY", apiKey);
+                }
+
                 JsonArray logs = gson.fromJson(new InputStreamReader(conn.getInputStream(), "UTF-8"), JsonArray.class);
 
                 for (JsonElement elem : logs) {
@@ -110,16 +114,15 @@ public class ApiWatcher implements Runnable {
                 match = Pattern.matches(cond.pattern, fieldValue);
             }
             if (first) {
-                result = match;
-                first = false;
+                result = match; first = false;
             } 
 			else {
-                if ("AND".equalsIgnoreCase(cond.logicOp)) {
-                    result = result && match;
-                } 
-				else if ("OR".equalsIgnoreCase(cond.logicOp)) {
-                    result = result || match;
-                }
+                if ("AND".equalsIgnoreCase(cond.logicOp)){
+					result = result && match;
+				}
+                else if ("OR".equalsIgnoreCase(cond.logicOp)){
+					result = result || match;
+				}
             }
         }
         return result;

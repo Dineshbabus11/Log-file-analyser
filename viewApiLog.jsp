@@ -63,7 +63,7 @@
         <input type="hidden" name="indexName" value="<%= URLEncoder.encode((String)request.getAttribute("apiIndex"), "UTF-8") %>" />
         <button type="submit">Export PDF</button>
     </form>
-    <a href="manageMultiAppPaths.jsp">Back</a>
+    <a href="manageApiUrls.jsp">Back</a>
     <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
         <thead>
             <tr>
