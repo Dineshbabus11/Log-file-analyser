@@ -87,7 +87,6 @@ public class LogIngestServlet extends HttpServlet {
 
             Map<String, Object> doc = new HashMap<>();
             doc.put("date", jsonLog.has("date") ? jsonLog.get("date").getAsString() : "");
-            doc.put("filename", jsonLog.has("filename") ? jsonLog.get("filename").getAsString() : "");
             doc.put("code", jsonLog.has("code") ? jsonLog.get("code").getAsString() : "");
             doc.put("level", jsonLog.has("level") ? jsonLog.get("level").getAsString() : "");
             doc.put("logger", jsonLog.has("logger") ? jsonLog.get("logger").getAsString() : "");
@@ -96,6 +95,7 @@ public class LogIngestServlet extends HttpServlet {
             doc.put("matchedRuleIds", matchedRuleIds);
             doc.put("matchedRuleNames", matchedRuleNames);
             doc.put("timestamp", Instant.now().toString());
+			doc.put("Detail", jsonLog.get("message").getAsString());
 
             IndexRequest reqIndex = new IndexRequest(indexName).source(doc, XContentType.JSON);
             IndexResponse response = client.index(reqIndex, RequestOptions.DEFAULT);

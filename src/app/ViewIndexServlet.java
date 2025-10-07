@@ -33,12 +33,14 @@ public class ViewIndexServlet extends HttpServlet {
         try {
             page = Integer.parseInt(req.getParameter("page"));
             if (page < 1) page = 1;
-        } catch (Exception ignored) {}
+        } 
+		catch (Exception ignored) {}
 
         try {
             size = Integer.parseInt(req.getParameter("size"));
             if (size < 1) size = 50;
-        } catch (Exception ignored) {}
+        } 
+		catch (Exception ignored) {}
 
         if (indexName == null || indexName.trim().isEmpty()) {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);

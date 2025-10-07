@@ -1,122 +1,227 @@
 <%@ page import="javax.servlet.http.HttpSession" %>
-<%@ page import="java.net.URLEncoder" %>
 <%
-    if (session == null || session.getAttribute("username") == null) {
-        response.sendRedirect(request.getContextPath() + "/login");
-        return;
-    }
+  if (session == null || session.getAttribute("username") == null) {
+    response.sendRedirect(request.getContextPath() + "/login.jsp");
+    return;
+  }
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Index View - <%= request.getParameter("indexName") %></title>
-    <link rel="stylesheet" href="./style.css" />
-    <script>
-        let currentPage = 1;
-const pageSize = 50;
+  <title>Simple Layout Logs Viewer</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-function buildTableHeader(keys) {
-    const thead = document.querySelector('table thead');
-    thead.innerHTML = '';
 
-    const tr = document.createElement('tr');
-    keys.forEach(key => {
-        const th = document.createElement('th');
-        th.textContent = key.charAt(0).toUpperCase() + key.slice(1);
-        tr.appendChild(th);
-    });
-    thead.appendChild(tr);
+
+*{
+    font-family: "Outfit", sans-serif;
 }
-
-function fetchLogs(page = 1) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const indexName = urlParams.get("indexName");
-    fetch('viewIndexData?indexName=' + encodeURIComponent(indexName) + '&page=' + page + '&size=' + pageSize)
-        .then(response => response.json())
-        .then(data => {
-            currentPage = data.page;
-            const keys = data.allKeys;
-            buildTableHeader(keys);
-
-            const tbody = document.getElementById('logsBody');
-            tbody.innerHTML = '';
-            if (!data.logs || data.logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="' + keys.length + '" style="text-align:center">No logs found</td></tr>';
-                document.getElementById('pagination').style.display = 'none';
-                return;
-            }
-            data.logs.forEach(log => {
-                const row = document.createElement('tr');
-                keys.forEach(key => {
-                    const td = document.createElement('td');
-                    let val = log[key];
-                    if (Array.isArray(val)) {
-                        val = val.join(", ");
-                    }
-                    td.textContent = val != null ? val : '-';
-                    row.appendChild(td);
-                });
-                tbody.appendChild(row);
-            });
-
-            const pagination = document.getElementById('pagination');
-            pagination.style.display = 'block';
-
-            const totalPages = Math.ceil(data.totalHits / pageSize);
-            document.getElementById('pageInfo').textContent = 'Page ' + currentPage + ' of ' + totalPages;
-            document.getElementById('prevBtn').disabled = currentPage <= 1;
-            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
-        })
-        .catch(console.error);
-}
-
-function prevPage() {
-    if (currentPage > 1) {
-        fetchLogs(currentPage - 1);
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
     }
-}
-
-function nextPage() {
-    fetchLogs(currentPage + 1);
-}
-
-window.onload = () => {
-    fetchLogs(1);
-    setInterval(() => {
-        fetchLogs(currentPage);
-    }, 1000);
-};
-    </script>
+    .top-row {
+      display: flex;
+      gap: 20px;
+    }
+    .columns-section {
+      flex: 1;
+      border: 1px solid #000;
+      padding: 5px;
+      min-height: 100px;
+      overflow-y: auto;
+    }
+    .columns-section h2 {
+      margin: 0 0 5px 0;
+      font-size: 1.1em;
+    }
+    .table-section {
+      border: 1px solid #000;
+      padding: 5px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 5px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .column-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    button {
+      padding: 2px 6px;
+      font-size: 0.9em;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: default;
+    }
+    #paginationControls {
+      margin-top: 8px;
+    }
+    #paginationControls button {
+      margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-    <h1>View Logs for: <%= request.getParameter("indexName") %></h1>
-
-    <form action="manageindextracking.jsp" method="get" style="margin-bottom: 15px;">
-        <button type="submit">Back to Manage Indices</button>
-    </form>
-
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th>Time</th>
-                <th>Date</th>
-                <th>Logger</th>
-                <th>Level</th>
-                <th>Code</th>
-                <th>Message</th>
-                <th>Matched Rules</th>
-            </tr>
-        </thead>
-        <tbody id="logsBody">
-            <tr><td colspan="7" style="text-align:center">Loading...</td></tr>
-        </tbody>
-    </table>
-
-    <div id="pagination" style="display:none; margin-top: 10px;">
-        <button id="prevBtn" onclick="prevPage()">Previous</button>
-        <span id="pageInfo">Page 1</span>
-        <button id="nextBtn" onclick="nextPage()">Next</button>
+<h1>Simple Logs Viewer</h1>
+<div class="container">
+  <div class="top-row">
+    <div class="columns-section" id="availableColumnsContainer">
+      <h2>Available Columns</h2>
+      <div id="availableColumns"></div>
     </div>
+    <div class="columns-section" id="selectedColumnsContainer">
+      <h2>Selected Columns</h2>
+      <div id="addedColumns"></div>
+    </div>
+  </div>
+  <div class="table-section">
+    <table>
+      <thead>
+        <tr id="tableHeader"></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div id="paginationControls">
+      <button id="prevPage">Prev</button>
+      <span id="pageInfo"></span>
+      <button id="nextPage">Next</button>
+    </div>
+  </div>
+</div>
+<script>
+  let currentPage = 1;
+  const pageSize = 50;
+  let totalHits = 0;
+  let allKeys = [];
+  let addedColumns = [];
+  const refreshIntervalMs = 1000;
+  function fetchData(page) {
+    const params = new URLSearchParams(window.location.search);
+    const indexName = params.get('indexName');
+    fetch("viewIndexData?indexName=" + encodeURIComponent(indexName) + "&page=" + page + "&size=" + pageSize)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          alert("Error: " + data.error);
+          return;
+        }
+        allKeys = data.allKeys;
+        totalHits = data.totalHits;
+        currentPage = data.page;
+        if (addedColumns.length === 0 && allKeys.length > 0) {
+          addedColumns = allKeys.slice(0, 3);
+        }
+        renderAvailableColumns();
+        renderSelectedColumns();
+        renderLogsTable(data.logs);
+        renderPaginationControls();
+      })
+      .catch(err => console.error('Error fetching data:', err));
+  }
+  function renderAvailableColumns() {
+    const container = document.getElementById('availableColumns');
+    container.innerHTML = '';
+    allKeys.forEach(col => {
+      if (!addedColumns.includes(col)) {
+        const div = document.createElement('div');
+        div.className = 'column-item';
+        div.textContent = col;
+        const btn = document.createElement('button');
+        btn.textContent = 'Add';
+        btn.onclick = () => {
+          addedColumns.push(col);
+          renderAvailableColumns();
+          renderSelectedColumns();
+          fetchData(currentPage);
+        };
+        div.appendChild(btn);
+        container.appendChild(div);
+      }
+    });
+  }
+  function renderSelectedColumns() {
+    const container = document.getElementById('addedColumns');
+    container.innerHTML = '';
+    addedColumns.forEach(col => {
+      const div = document.createElement('div');
+      div.className = 'column-item';
+      div.textContent = col;
+      const btn = document.createElement('button');
+      btn.textContent = 'Remove';
+      btn.onclick = () => {
+        addedColumns = addedColumns.filter(c => c !== col);
+        renderAvailableColumns();
+        renderSelectedColumns();
+        fetchData(currentPage);
+      };
+      div.appendChild(btn);
+      container.appendChild(div);
+    });
+  }
+  function renderLogsTable(logs) {
+    const thead = document.getElementById('tableHeader');
+    thead.innerHTML = '';
+    addedColumns.forEach(col => {
+      const th = document.createElement('th');
+      th.textContent = col;
+      thead.appendChild(th);
+    });
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    logs.forEach(log => {
+      const tr = document.createElement('tr');
+      addedColumns.forEach(col => {
+        const td = document.createElement('td');
+        let val = log[col];
+        if (val === undefined || val === null || val === '') {
+			val = '-';
+		}
+        else if (Array.isArray(val)) {
+			val = val.join(', ');
+		}
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  }
+  function renderPaginationControls() {
+    const totalPages = Math.max(1, Math.ceil(totalHits / pageSize));
+    document.getElementById('pageInfo').textContent = "Page " + currentPage + " of " + totalPages;
+    document.getElementById('prevPage').disabled = currentPage <= 1;
+    document.getElementById('nextPage').disabled = currentPage >= totalPages;
+  }
+  document.getElementById('prevPage').addEventListener('click', () => {
+    if (currentPage > 1) {
+      fetchData(currentPage - 1);
+    }
+  });
+  document.getElementById('nextPage').addEventListener('click', () => {
+    const totalPages = Math.max(1, Math.ceil(totalHits / pageSize));
+    if (currentPage < totalPages) {
+      fetchData(currentPage + 1);
+    }
+  });
+  window.onload = () => {
+    fetchData(1);
+    setInterval(() => {
+      fetchData(currentPage);
+    }, refreshIntervalMs);
+  };
+</script>
 </body>
 </html>

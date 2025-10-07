@@ -22,9 +22,11 @@
     <input type="text" id="indexName" name="indexName" placeholder="Enter index name" required/><br/><br/>
     <input type="submit" value="Add Index" />
 </form>
+<br>
 <form action="manageindextracking.jsp" method="get" style="margin-top: 20px;">
     <button type="submit">Manage Index Tracking</button>
 </form>
+<br>
 <form action="index.jsp">
     <button type="submit">Back to Main</button>
 </form>

@@ -27,7 +27,8 @@
             }
             indexTokensMap.put(indexName, tokensList);
         }
-    } catch (Exception e) {
+    } 
+	catch (Exception e) {
         e.printStackTrace();
     }
 %>
