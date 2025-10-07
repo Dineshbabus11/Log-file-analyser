@@ -9,6 +9,12 @@
 <%@ page import="app.MultiAppPathWatcherManager" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
 <%
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+response.setHeader("Pragma", "no-cache");
+response.setDateHeader("Expires", 0);
+%>
+
+<%
     if (session == null || session.getAttribute("username") == null) {
         response.sendRedirect(request.getContextPath() + "/login");
         return;

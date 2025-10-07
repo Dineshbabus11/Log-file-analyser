@@ -14,4 +14,10 @@ public class SessionUtils {
         }
         return true;
     }
+	
+	public static void setNoCacheHeaders(HttpServletResponse res) {
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setDateHeader("Expires", 0); 
+    }
 }

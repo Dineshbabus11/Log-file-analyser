@@ -8,6 +8,7 @@ import java.io.IOException;
 @WebServlet("/matchedLogs")
 public class MatchedLogsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(resp);
 		if (!SessionUtils.checkLogin(req, resp)) {
 			return;
 		}

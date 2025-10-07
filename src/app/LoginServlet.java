@@ -11,10 +11,12 @@ import org.mindrot.jbcrypt.BCrypt;
 public class LoginServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
         req.getRequestDispatcher("login.jsp").forward(req, res);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
         String username = req.getParameter("username").trim();
         String password = req.getParameter("password").trim();
 

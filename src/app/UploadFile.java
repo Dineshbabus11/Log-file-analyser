@@ -28,6 +28,7 @@ public class UploadFile extends HttpServlet {
 	private static final int size = 10;
 
 	protected void doGet(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}
@@ -35,6 +36,7 @@ public class UploadFile extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

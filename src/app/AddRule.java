@@ -13,6 +13,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 @WebServlet("/addRule")
 public class AddRule extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

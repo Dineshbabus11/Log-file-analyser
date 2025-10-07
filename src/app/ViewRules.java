@@ -9,6 +9,7 @@ import javax.servlet.http.*;
 @WebServlet("/viewRules")
 public class ViewRules extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

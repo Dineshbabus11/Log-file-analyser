@@ -12,6 +12,7 @@ import org.elasticsearch.client.indices.GetIndexRequest;
 @WebServlet("/addIndex")
 public class AddIndexServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
             res.sendRedirect(req.getContextPath() + "/login");

@@ -8,6 +8,7 @@ import java.io.IOException;
 @WebServlet("/viewIndex")
 public class ViewIndexPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
         if (!SessionUtils.checkLogin(req, res)) {
             return;
         }

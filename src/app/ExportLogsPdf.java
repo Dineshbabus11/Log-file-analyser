@@ -19,6 +19,7 @@ import com.lowagie.text.pdf.*;
 @WebServlet("/ExportLogsPdf")
 public class ExportLogsPdf extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

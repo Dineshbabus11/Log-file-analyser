@@ -29,6 +29,7 @@ public class UploadPath extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

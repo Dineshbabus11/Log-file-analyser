@@ -14,6 +14,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 @WebServlet("/viewMultiAppLog")
 public class ViewMultiAppLogServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

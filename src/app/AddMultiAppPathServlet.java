@@ -17,6 +17,7 @@ import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 @WebServlet("/addMultiAppPath")
 public class AddMultiAppPathServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

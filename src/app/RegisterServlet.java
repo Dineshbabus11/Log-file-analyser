@@ -10,10 +10,12 @@ import org.mindrot.jbcrypt.BCrypt;
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(resp);
         req.getRequestDispatcher("register.jsp").forward(req, resp);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(resp);
         String username = req.getParameter("username").trim();
         String password = req.getParameter("password").trim();
         String role = req.getParameter("role").trim();

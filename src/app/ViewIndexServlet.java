@@ -22,6 +22,7 @@ public class ViewIndexServlet extends HttpServlet {
     private Gson gson = new Gson();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
         if (!SessionUtils.checkLogin(req, res)) {
             return;
         }

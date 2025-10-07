@@ -19,6 +19,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 public class FilterMessage extends HttpServlet{
     private static final int size=10;
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException{
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

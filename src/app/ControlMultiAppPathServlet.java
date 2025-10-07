@@ -8,6 +8,7 @@ import java.io.IOException;
 @WebServlet("/controlMultiAppPath")
 public class ControlMultiAppPathServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
 		if (!SessionUtils.checkLogin(req, res)) {
 			return;
 		}

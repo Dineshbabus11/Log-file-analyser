@@ -9,6 +9,7 @@ import java.sql.*;
 @WebServlet("/deleteToken")
 public class DeleteTokenServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(res);
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
             res.sendRedirect(req.getContextPath() + "/login");

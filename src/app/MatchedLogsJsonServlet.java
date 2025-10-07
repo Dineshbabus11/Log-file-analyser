@@ -23,6 +23,7 @@ public class MatchedLogsJsonServlet extends HttpServlet {
     private Gson gson = new Gson();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		SessionUtils.setNoCacheHeaders(resp);
 		if (!SessionUtils.checkLogin(req, resp)) {
 			return;
 		}
