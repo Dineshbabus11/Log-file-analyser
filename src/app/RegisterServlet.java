@@ -3,8 +3,9 @@ package app;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.*;
+import java.io.IOException;
 import java.sql.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
@@ -17,10 +18,12 @@ public class RegisterServlet extends HttpServlet {
         String password = req.getParameter("password").trim();
         String role = req.getParameter("role").trim();
 
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
         try (Connection con = DBconnect.connect();
              PreparedStatement ps = con.prepareStatement("INSERT INTO users (username, password, role) VALUES (?, ?, ?)")) {
             ps.setString(1, username);
-            ps.setString(2, password);
+            ps.setString(2, hashedPassword);
             ps.setString(3, role);
             ps.executeUpdate();
             resp.sendRedirect("login.jsp");
