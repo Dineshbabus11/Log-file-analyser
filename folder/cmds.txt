@@ -17,4 +17,4 @@ curl -X GET "http://localhost:9200/_cat/indices?v"
 javac -cp "C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\lib\*;C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\webapps\BloodDonationWeb\WEB-INF\lib\*" *.java
 
 
-javac -cp ".;WEB-INF\lib\*;C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\lib\*" -d WEB-INF\classes\app src\app\*.java
+javac -cp ".;WEB-INF\lib\*;C:\Users\Arul selvan\OneDrive\Desktop\Dinesh\Zoho Official\apache-tomcat-9.0.109\lib\*" -d WEB-INF\classes src\app\*.java

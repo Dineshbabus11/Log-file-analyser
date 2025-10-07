@@ -1,4 +1,12 @@
 <%@page import="java.sql.*,app.DBconnect"%>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%
+    if (session == null || session.getAttribute("username") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <HTML>
 	<head>

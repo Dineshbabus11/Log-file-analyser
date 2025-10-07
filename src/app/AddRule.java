@@ -13,6 +13,9 @@ import org.elasticsearch.client.RestHighLevelClient;
 @WebServlet("/addRule")
 public class AddRule extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         String name=req.getParameter("name");
 		String email = req.getParameter("email");
         String[] fields=req.getParameterValues("field");

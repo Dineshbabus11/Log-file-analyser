@@ -28,10 +28,16 @@ public class UploadFile extends HttpServlet {
 	private static final int size = 10;
 
 	protected void doGet(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
 		doPost(req,res);
 	}
 
 	protected void doPost(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
 		String contentType = req.getContentType();
 		Part filePart=null;
 		if(contentType!=null && contentType.toLowerCase().startsWith("multipart/")) {

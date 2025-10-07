@@ -23,6 +23,9 @@ public class MatchedLogsJsonServlet extends HttpServlet {
     private Gson gson = new Gson();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (!SessionUtils.checkLogin(req, resp)) {
+			return;
+		}
         String lastIdParam = req.getParameter("lastId");
         int lastId = 0;
         if(lastIdParam != null){

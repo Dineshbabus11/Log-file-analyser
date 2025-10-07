@@ -29,6 +29,9 @@ public class UploadPath extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         res.setContentType("text/html");
         String dir = req.getParameter("path");
         PrintWriter out = res.getWriter();

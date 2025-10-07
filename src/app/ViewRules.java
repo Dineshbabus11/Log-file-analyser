@@ -9,6 +9,9 @@ import javax.servlet.http.*;
 @WebServlet("/viewRules")
 public class ViewRules extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         try (Connection con = DBconnect.connect();
              PreparedStatement ps = con.prepareStatement("SELECT * FROM rules");
              ResultSet rs = ps.executeQuery()) {

@@ -19,6 +19,9 @@ import com.lowagie.text.pdf.*;
 @WebServlet("/ExportLogsPdf")
 public class ExportLogsPdf extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         String indexName = req.getParameter("indexName");
         if (indexName == null || indexName.trim().isEmpty()) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST, "indexName required");

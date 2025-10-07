@@ -19,6 +19,9 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 public class FilterMessage extends HttpServlet{
     private static final int size=10;
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException{
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         String msgPattern=req.getParameter("msgPattern");
         String fileName=req.getParameter("fileName");
 

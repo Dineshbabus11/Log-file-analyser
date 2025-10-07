@@ -8,6 +8,9 @@ import java.io.IOException;
 @WebServlet("/controlMultiAppPath")
 public class ControlMultiAppPathServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         String path = req.getParameter("path");
         String action = req.getParameter("action");
 

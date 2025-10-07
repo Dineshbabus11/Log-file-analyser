@@ -1,4 +1,12 @@
 <%@ page import="app.LogEntry" %>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%
+    if (session == null || session.getAttribute("username") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html>
 <head>

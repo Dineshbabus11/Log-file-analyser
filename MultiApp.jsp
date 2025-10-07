@@ -1,3 +1,10 @@
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%
+    if (session == null || session.getAttribute("username") == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +24,7 @@
     <form action="manageMultiAppPaths.jsp" method="get">
         <button type="submit">Go to Manage Paths</button>
     </form>
-	<form action="index.html">
+	<form action="index.jsp">
         <button type="submit">Back to main page</button>
     </form>
 </body>

@@ -3,9 +3,11 @@ package app;
 import javax.servlet.*;
 import java.sql.*;
 import javax.servlet.annotation.*;
+import java.util.*;
 
 @WebListener
 public class StartupListener implements ServletContextListener {
+	private Timer timer;
     public void contextInitialized(ServletContextEvent sce) {
         try(Connection con = DBconnect.connect()) {
             try(PreparedStatement ps = con.prepareStatement(
@@ -17,18 +19,22 @@ public class StartupListener implements ServletContextListener {
                     MultiAppPathWatcherManager.startTracking(path, indexName);
                 }
             }
-            try(PreparedStatement ps = con.prepareStatement(
-                    "SELECT api_url, api_key, index_name FROM watched_apis WHERE enabled = TRUE");
-                ResultSet rs = ps.executeQuery()) {
-                while(rs.next()) {
-                    String apiUrl = rs.getString("api_url");
-                    String apiKey = rs.getString("api_key");
-                    String indexName = rs.getString("index_name");
-                    ApiWatcherManager.startTracking(apiUrl, apiKey, indexName);
-                }
-            }
-        } catch(Exception e) {
+            
+        } 
+		catch(Exception e) {
             e.printStackTrace();
         }
+		
+		timer = new Timer(true);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                try {
+                    TokenManager.cleanupExpiredTokens();
+                } 
+				catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 60 * 60 * 1000);
     }
 }

@@ -17,6 +17,9 @@ import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 @WebServlet("/addMultiAppPath")
 public class AddMultiAppPathServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         String newPath=req.getParameter("newPath").trim();
         if (newPath==null || newPath.isEmpty()) {
             res.sendRedirect("MultiApp.jsp");

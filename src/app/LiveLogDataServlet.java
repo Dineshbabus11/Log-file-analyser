@@ -19,6 +19,9 @@ public class LiveLogDataServlet extends HttpServlet {
     private Gson gson = new Gson();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if (!SessionUtils.checkLogin(req, res)) {
+			return;
+		}
         String indexName=req.getParameter("indexName");
         int page=1;
         int size=50;

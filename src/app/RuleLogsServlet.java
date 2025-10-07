@@ -17,6 +17,9 @@ import org.elasticsearch.action.get.MultiGetItemResponse;
 @WebServlet("/ruleLogs")
 public class RuleLogsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (!SessionUtils.checkLogin(req, resp)) {
+			return;
+		}
         RestHighLevelClient esClient=ESClient.getClient();
         List<String> allLogIds=new ArrayList<>();
         Map<String, List<Integer>> logIdToRuleIds=new HashMap<>();
