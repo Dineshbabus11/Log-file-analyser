@@ -10,8 +10,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -25,7 +25,7 @@ public class LogIngestServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String indexName = req.getParameter("indexName");
-        String token = req.getParameter("token");
+        String token = req.getParameter("token").trim();
 
         System.out.println("Received log ingest request for index: " + indexName);
 
@@ -41,7 +41,8 @@ public class LogIngestServlet extends HttpServlet {
                 res.getWriter().write("{\"error\":\"Invalid or expired token\"}");
                 return;
             }
-        } catch (SQLException e) {
+        } 
+		catch (SQLException e) {
             throw new ServletException("Token validation error", e);
         }
 
@@ -86,16 +87,16 @@ public class LogIngestServlet extends HttpServlet {
             RestHighLevelClient client = ESClient.getClient();
 
             Map<String, Object> doc = new HashMap<>();
-            doc.put("date", jsonLog.has("date") ? jsonLog.get("date").getAsString() : "");
-            doc.put("code", jsonLog.has("code") ? jsonLog.get("code").getAsString() : "");
-            doc.put("level", jsonLog.has("level") ? jsonLog.get("level").getAsString() : "");
-            doc.put("logger", jsonLog.has("logger") ? jsonLog.get("logger").getAsString() : "");
-            doc.put("time", jsonLog.has("time") ? jsonLog.get("time").getAsString() : "");
-            doc.put("message", jsonLog.has("message") ? jsonLog.get("message").getAsString() : "");
+
+            for (Map.Entry<String, JsonElement> entry : jsonLog.entrySet()) {
+                if (!entry.getValue().isJsonNull()) {
+                    doc.put(entry.getKey(), gson.fromJson(entry.getValue(), Object.class));
+                }
+            }
+
             doc.put("matchedRuleIds", matchedRuleIds);
             doc.put("matchedRuleNames", matchedRuleNames);
             doc.put("timestamp", Instant.now().toString());
-			doc.put("Detail", jsonLog.get("message").getAsString());
 
             IndexRequest reqIndex = new IndexRequest(indexName).source(doc, XContentType.JSON);
             IndexResponse response = client.index(reqIndex, RequestOptions.DEFAULT);
@@ -104,7 +105,8 @@ public class LogIngestServlet extends HttpServlet {
 
             res.setStatus(HttpServletResponse.SC_OK);
             res.getWriter().write("{\"message\":\"Log indexed successfully\"}");
-        } catch (Exception e) {
+        } 
+		catch (Exception e) {
             System.err.println("Error during indexing: " + e.getMessage());
             e.printStackTrace();
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -167,10 +169,12 @@ public class LogIngestServlet extends HttpServlet {
             if (first) {
                 result = match;
                 first = false;
-            } else {
+            } 
+			else {
                 if ("AND".equalsIgnoreCase(cond.logicOp)) {
                     result = result && match;
-                } else if ("OR".equalsIgnoreCase(cond.logicOp)) {
+                } 
+				else if ("OR".equalsIgnoreCase(cond.logicOp)) {
                     result = result || match;
                 }
             }

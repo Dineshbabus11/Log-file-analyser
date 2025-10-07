@@ -77,6 +77,7 @@
 </head>
 <body>
 <h1>Simple Logs Viewer</h1>
+<a href="manageindextracking.jsp">Back to manage page</a>
 <div class="container">
   <div class="top-row">
     <div class="columns-section" id="availableColumnsContainer">
