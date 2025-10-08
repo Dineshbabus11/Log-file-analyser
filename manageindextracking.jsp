@@ -59,7 +59,8 @@ response.setDateHeader("Expires", 0);
     %>
         <p>No tracked indices found.</p>
     <%
-        } else {
+        } 
+		else {
             for (Map.Entry<String, List<Map<String, Object>>> entry : indexTokensMap.entrySet()) {
                 String indexName = entry.getKey();
                 List<Map<String, Object>> tokens = entry.getValue();

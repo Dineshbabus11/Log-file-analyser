@@ -83,6 +83,12 @@ response.setDateHeader("Expires", 0);
 </head>
 <body>
 <h1>Simple Logs Viewer</h1>
+<%
+  String indexName = request.getParameter("indexName");
+%>
+<h2>
+  Index: <span id="indexNameDisplay"><%= indexName != null ? indexName : "N/A" %></span>
+</h2>
 <a href="manageindextracking.jsp">Back to manage page</a>
 <div class="container">
   <div class="top-row">
@@ -95,6 +101,10 @@ response.setDateHeader("Expires", 0);
       <div id="addedColumns"></div>
     </div>
   </div>
+  <form method="get" action="ExportLogsPdf" target="_blank" style="margin-bottom: 16px;">
+  <input type="hidden" name="indexName" value="<%= indexName %>" />
+  <button type="submit">Export to PDF</button>
+</form>
   <div class="table-section">
     <table>
       <thead>
